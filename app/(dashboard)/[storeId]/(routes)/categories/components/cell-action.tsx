@@ -17,10 +17,10 @@ import {
 import { useCategoryModal } from "@/hooks/use-category-modal";
 import { AlertModal } from "@/components/modals/alert-modal";
 
-import { CategoryColumn } from "./columns";
+// import { CategoryColumn } from "./columns";
 
 interface CellActionProps {
-  data: CategoryColumn;
+  data: any;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
