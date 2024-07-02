@@ -97,7 +97,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { label, imageUrl } = body;
+    const { productId, status } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", {
@@ -106,22 +106,22 @@ export async function POST(
       });
     }
 
-    if (!label) {
-      return new NextResponse("Label is required", {
+    if (!productId) {
+      return new NextResponse("Product ID is required", {
         status: 400,
         headers: corsHeaders,
       });
     }
 
-    if (!imageUrl) {
-      return new NextResponse("Image URL is required", {
+    if (!status) {
+      return new NextResponse("Status is required", {
         status: 400,
         headers: corsHeaders,
       });
     }
 
     if (!params.storeId) {
-      return new NextResponse("Store id is required", {
+      return new NextResponse("Store ID is required", {
         status: 400,
         headers: corsHeaders,
       });
@@ -141,17 +141,18 @@ export async function POST(
       });
     }
 
-    const billboard = await prismadb.billboard.create({
+    const booking = await prismadb.booking.create({
       data: {
-        label,
-        imageUrl,
+        productId,
+        status,
         storeId: params.storeId,
+        userId,
       },
     });
 
-    return NextResponse.json(billboard, { headers: corsHeaders });
+    return NextResponse.json(booking, { headers: corsHeaders });
   } catch (error) {
-    console.log("[BILLBOARDS_POST]", error);
+    console.log("[BOOKINGS_POST]", error);
     return new NextResponse("Internal error", {
       status: 500,
       headers: corsHeaders,
@@ -165,21 +166,21 @@ export async function GET(
 ) {
   try {
     if (!params.storeId) {
-      return new NextResponse("Store id is required", {
+      return new NextResponse("Store ID is required", {
         status: 400,
         headers: corsHeaders,
       });
     }
 
-    const billboards = await prismadb.billboard.findMany({
+    const bookings = await prismadb.booking.findMany({
       where: {
         storeId: params.storeId,
       },
     });
 
-    return NextResponse.json(billboards, { headers: corsHeaders });
+    return NextResponse.json(bookings, { headers: corsHeaders });
   } catch (error) {
-    console.log("[BILLBOARDS_GET]", error);
+    console.log("[BOOKINGS_GET]", error);
     return new NextResponse("Internal error", {
       status: 500,
       headers: corsHeaders,

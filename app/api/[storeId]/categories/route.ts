@@ -1,8 +1,15 @@
-import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs";
+import { PrismaClient } from "@prisma/client";
 
-import prismadb from '@/lib/prismadb';
- 
+const prisma = new PrismaClient();
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*", // Change this to your frontend domain
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
 export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
@@ -12,49 +19,68 @@ export async function POST(
 
     const body = await req.json();
 
-    const { name, billboardId } = body;
+    const { name, billboardId, imageUrl } = body;
 
     if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 });
+      return new NextResponse("Unauthenticated", {
+        status: 403,
+        headers: corsHeaders,
+      });
     }
 
     if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
+      return new NextResponse("Name is required", {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
-    
-    if (!billboardId) {
-      return new NextResponse("Billboard ID is required", { status: 400 });
+
+    if (!imageUrl) {
+      return new NextResponse("Image URL is required", {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
 
     if (!params.storeId) {
-      return new NextResponse("Store id is required", { status: 400 });
+      return new NextResponse("Store id is required", {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
 
-    const storeByUserId = await prismadb.store.findFirst({
+    const storeByUserId = await prisma.store.findFirst({
       where: {
         id: params.storeId,
         userId,
-      }
+      },
     });
 
     if (!storeByUserId) {
-      return new NextResponse("Unauthorized", { status: 405 });
+      return new NextResponse("Unauthorized", {
+        status: 405,
+        headers: corsHeaders,
+      });
     }
 
-    const category = await prismadb.category.create({
+    const category = await prisma.category.create({
       data: {
         name,
         billboardId,
+        imageUrl,
         storeId: params.storeId,
-      }
+      },
     });
-  
-    return NextResponse.json(category);
+
+    return NextResponse.json(category, { headers: corsHeaders });
   } catch (error) {
-    console.log('[CATEGORIES_POST]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    console.log("[CATEGORIES_POST]", error);
+    return new NextResponse("Internal error", {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
-};
+}
 
 export async function GET(
   req: Request,
@@ -62,18 +88,24 @@ export async function GET(
 ) {
   try {
     if (!params.storeId) {
-      return new NextResponse("Store id is required", { status: 400 });
+      return new NextResponse("Store id is required", {
+        status: 400,
+        headers: corsHeaders,
+      });
     }
 
-    const categories = await prismadb.category.findMany({
+    const categories = await prisma.category.findMany({
       where: {
-        storeId: params.storeId
-      }
+        storeId: params.storeId,
+      },
     });
-  
-    return NextResponse.json(categories);
+
+    return NextResponse.json(categories, { headers: corsHeaders });
   } catch (error) {
-    console.log('[CATEGORIES_GET]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    console.log("[CATEGORIES_GET]", error);
+    return new NextResponse("Internal error", {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
-};
+}

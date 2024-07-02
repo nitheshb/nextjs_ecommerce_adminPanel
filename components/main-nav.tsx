@@ -29,6 +29,11 @@ export function MainNav({
       active: pathname === `/${params.storeId}/categories`,
     },
     {
+      href: `/${params.storeId}/bookings`, // Define Booking route
+      label: 'Bookings', // Label for Booking route
+      active: pathname === `/${params.storeId}/bookings`, // Check if active
+    },
+    {
       href: `/${params.storeId}/sizes`,
       label: 'Sizes',
       active: pathname === `/${params.storeId}/sizes`,
