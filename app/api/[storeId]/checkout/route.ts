@@ -5,7 +5,7 @@ import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
 const allowedOrigins = ['https://ecomme-admin.netlify.app', 'https://another-allowed-origin.com'];
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://ecomme-admin.netlify.app",
+  "Access-Control-Allow-Origin": "https://nextjs-ecommerce-store-chi.vercel.app",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
