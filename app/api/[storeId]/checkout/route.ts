@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
-
+const allowedOrigins = ['https://ecomme-admin.netlify.app', 'https://another-allowed-origin.com'];
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "http://localhost:3001",
+  "Access-Control-Allow-Origin": "https://ecomme-admin.netlify.app",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
